@@ -10,6 +10,6 @@ The script is purposefully kept minimal, so that it can be used with bash
 
 This software is licensed under the "GPL-3.0" License.
 
-  (C) 2020  NorthernSec		https://github.com/NorthernSec
-  (c) 2020  Pieter-Jan Moreels	https://github.com/pidgeyl
+    (C) 2020  NorthernSec		https://github.com/NorthernSec
+    (c) 2020  Pieter-Jan Moreels	https://github.com/pidgeyl
 
