@@ -1,5 +1,6 @@
 import os
 import string
+import sys
 import AdvancedInput as AI
 
 _VOWELS_     = {'a', 'i', 'u', 'e', 'o'}
@@ -67,7 +68,6 @@ _KATAKANA_.update(_PUNCTUATION_)
 
 active = "H"
 kana   = _HIRAGANA_
-os.system('setterm -cursor off')
 
 
 def change_kana(buffer = None, **kwargs):
@@ -120,14 +120,28 @@ def check_kana(buffer = None, key=None, **kwargs):
     return {'buffer': buffer}
 
 
-interface  = AI.AdvancedInput()
-hooks      = {x: check_kana for x in string.ascii_letters+',.-'}
-hooks['\t'] = change_kana
-x = interface.input(cursor = "H > ", hooks=hooks)
+if __name__ == '__main__':
+    import argparse
+    argParser = argparse.ArgumentParser(description='Extract information from the MISP API')
+    argParser.add_argument('-c', '--clip',   action="store_true", help='Copy to clipboard')
+    argParser.add_argument('-s', '--silent', action="store_true", help="Don't print output")
+    args = argParser.parse_args()
 
-print(x)
+    if sys.stdin.isatty(): # Text piped from STDIN
+        os.system('setterm -cursor off')
+        interface  = AI.AdvancedInput()
+        hooks      = {x: check_kana for x in string.ascii_letters+',.-'}
+        hooks['\t'] = change_kana
+        result = interface.input(cursor = "H > ", hooks=hooks)
+        sys.stdout.write('\x1b[1A'+ '\r' + '\033[K' + '\r')
+        if not args.silent:
+            sys.stdout.write(result + '\n')
+        sys.stdout.flush()
+        os.system('setterm -cursor on')
+    else:
+        pass
 
-os.system('setterm -cursor on')
-
-
-
+    if args.clip:
+        from subprocess import Popen, PIPE
+        p = Popen(['xsel','-ib'], stdin=PIPE)
+        p.communicate(input=result.encode())
