@@ -115,7 +115,9 @@ def check_kana(buffer = None, key=None, **kwargs):
         buffer = look_up_char(buffer, 1)
     # Check if a N is in front of consonant
     if len(buffer) > 2:
-        if buffer[-2].lower() == 'n':
+        if   buffer[-1].lower() == 'y': # May be Nya, Nyu, Nyo
+            pass
+        elif buffer[-2].lower() == 'n':
             buffer = buffer[:-2] + kana.get('n') + buffer[-1]
     return {'buffer': buffer}
 
