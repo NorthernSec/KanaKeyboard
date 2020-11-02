@@ -133,6 +133,12 @@ if __name__ == '__main__':
         hooks      = {x: check_kana for x in string.ascii_letters+',.-'}
         hooks['\t'] = change_kana
         result = interface.input(cursor = "H > ", hooks=hooks)
+        # Fix n at end of input
+        if   result[-1] == 'n' and active == 'H':
+            result = result[:-1] + _HIRAGANA_.get('n')
+        elif result[-1] == 'n' and active == 'K':
+            result = result[:-1] + _KATAKANA_.get('n')
+
         sys.stdout.write('\x1b[1A'+ '\r' + '\033[K' + '\r')
         if not args.silent:
             sys.stdout.write(result + '\n')
