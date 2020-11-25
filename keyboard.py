@@ -115,7 +115,9 @@ def check_kana(buffer = None, key=None, **kwargs):
         buffer = look_up_char(buffer, 1)
     # Check if a N is in front of consonant
     if len(buffer) > 2:
-        if buffer[-2].lower() == 'n':
+        if   buffer[-1].lower() == 'y': # May be Nya, Nyu, Nyo
+            pass
+        elif buffer[-2].lower() == 'n':
             buffer = buffer[:-2] + kana.get('n') + buffer[-1]
     return {'buffer': buffer}
 
@@ -133,6 +135,12 @@ if __name__ == '__main__':
         hooks      = {x: check_kana for x in string.ascii_letters+',.-'}
         hooks['\t'] = change_kana
         result = interface.input(cursor = "H > ", hooks=hooks)
+        # Fix n at end of input
+        if   result[-1] == 'n' and active == 'H':
+            result = result[:-1] + _HIRAGANA_.get('n')
+        elif result[-1] == 'n' and active == 'K':
+            result = result[:-1] + _KATAKANA_.get('n')
+
         sys.stdout.write('\x1b[1A'+ '\r' + '\033[K' + '\r')
         if not args.silent:
             sys.stdout.write(result + '\n')
